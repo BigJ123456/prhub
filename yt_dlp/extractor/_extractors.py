@@ -1539,6 +1539,10 @@ from .pluralsight import (
     PluralsightIE,
 )
 from .plutotv import PlutoTVIE
+from .pmvhaven import (
+    PMVHavenIE,
+    PMVHavenProfileIE,
+)
 from .podbayfm import (
     PodbayFMChannelIE,
     PodbayFMIE,
