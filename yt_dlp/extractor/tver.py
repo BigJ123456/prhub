@@ -10,7 +10,7 @@ from ..utils import (
 
 
 class TVerIE(InfoExtractor):
-    _VALID_URL = r'https?://(?:www\.)?tver\.jp/(?:(?P<type>lp|corner|series|episodes?|feature|tokyo2020/video)/)+(?P<id>[a-zA-Z0-9]+)'
+    _VALID_URL = r'https?://(?:www\.)?tver\.jp/(?:(?P<type>lp|corner|series|episodes?|feature|tokyo2020/video|olympic/paris2024/video)/)+(?P<id>[a-zA-Z0-9]+)'
     _TESTS = [{
         'skip': 'videos are only available for 7 days',
         'url': 'https://tver.jp/episodes/ep83nf3w4p',
@@ -28,6 +28,9 @@ class TVerIE(InfoExtractor):
         'only_matching': True,
     }, {
         'url': 'https://tver.jp/lp/f0033031',
+        'only_matching': True,
+    }, {
+        'url': 'https://tver.jp/olympic/paris2024/video/6359578055112/',
         'only_matching': True,
     }]
     BRIGHTCOVE_URL_TEMPLATE = 'http://players.brightcove.net/%s/default_default/index.html?videoId=%s'
@@ -52,6 +55,13 @@ class TVerIE(InfoExtractor):
             video_id = self._match_id(self._search_regex(
                 (r'canonical"\s*href="(https?://tver\.jp/[^"]+)"', r'&link=(https?://tver\.jp/[^?&]+)[?&]'),
                 webpage, 'url regex'))
+
+        if video_type == 'olympic/paris2024/video':
+            # Player ID is taken from .content.brightcove.E200.pro.pc.account_id:
+            # https://tver.jp/olympic/paris2024/req/api/hook?q=https%3A%2F%2Folympic-assets.tver.jp%2Fweb-static%2Fjson%2Fconfig.json&d=
+            return self.url_result(smuggle_url(
+                self.BRIGHTCOVE_URL_TEMPLATE % ('4774017240001', video_id),
+                {'geo_countries': ['JP']}), 'BrightcoveNew')
 
         episode_info = self._download_json(
             f'https://platform-api.tver.jp/service/api/v1/callEpisode/{video_id}?require_data=mylist,later[epefy106ur],good[epefy106ur],resume[epefy106ur]',
