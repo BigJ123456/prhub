@@ -2392,6 +2392,7 @@ from .vvvvid import (
     VVVVIDIE,
     VVVVIDShowIE,
 )
+from .vyneer import VyneerIE
 from .walla import WallaIE
 from .washingtonpost import (
     WashingtonPostArticleIE,
